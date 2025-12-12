@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/signup.css">
+    <title>Sign Up</title>
+</head>
+
+<body>
+    <section class="page">
+        <div class="main-content">
+            <div class="logo-section">
+                <div class="logo-wrapper">
+                    <img class="logo" src="/logo.png" alt="">
+                    <h1 class="logo-name">Safe</h1>
+                </div>
+                <h1>create your account</h1>
+                <p class="hook">Start storing your files securely today</p>
+            </div>
+            <form action="/signup" method="post">
+                <div class="input-wrapper">
+                    <label for="email">Email Address</label>
+                    <input type="email" name="email" id="email" autocomplete="email">
+                </div>
+                <div class="input-wrapper">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" autocomplete="new-password">
+                </div>
+                <div class="input-wrapper">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" name="confirm_password" id="confirm_password" autocomplete="new-password">
+                </div>
+                <button type="submit">Create Account</button>
+            </form>
+            <p class="signin">already have an account ? <a href="/login">Log in</a></p>
+
+
+        </div>
+
+    </section>
+</body>
+
+</html>
