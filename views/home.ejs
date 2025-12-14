@@ -110,13 +110,16 @@
 
             </div>
 
-            <label class="upload-area" for="file">
-                <div class="upload-wrapper">
-                    <i class="fa-solid fa-arrow-up-from-bracket"></i>
-                    <p>Choose Files to uplad or Drag & drop here </p>
-                    <p class="file-name"></p>
-                    <input class="file" type="file" name="file" id="file">
-            </label>
+            <form enctype="multipart/form-data" id="file-form">
+                <label class="upload-area" for="file">
+                    <div class="upload-wrapper">
+                        <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                        <p>Choose Files to uplad or Drag & drop here </p>
+                        <p class="file-name"></p>
+                        <input class="file" type="file" name="file" id="file">
+                        <progress class="progress-bar hide" max="100" value="0"></progress>
+                </label>
+            </form>
     </div>
 
     </section>

@@ -30,9 +30,11 @@ goBack.addEventListener('click', () => {
 let uploadedFileName = document.querySelector('.file-name');
 
 let fileInput = document.querySelector('#file');
-console.log(fileInput);
+let fileform = document.getElementById('file-form');
+let progressBar = document.querySelector('.progress-bar')
 
-fileInput.addEventListener("change", (e) => {
+fileInput.addEventListener("change", async (e) => {
+
     let file = e.target.files[0];
     let sizemb = file.size / 1000000;
     if (sizemb > 5) {
@@ -46,26 +48,25 @@ fileInput.addEventListener("change", (e) => {
         alert('unknown file type')
         return
     }
-
     uploadedFileName.textContent = file.name;
+    let data = new FormData(fileform);
+    let xhr = new XMLHttpRequest()
 
+    progressBar.classList.toggle('hide');
+    xhr.upload.addEventListener('progress', (e) => {
+        let current = e.loaded / e.total;
+        progressBar.value = Math.floor(current * 100);
+    })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    xhr.upload.addEventListener('loadend', (e) => {
+        progressBar.classList.toggle('hide');
+        fileInput.files = null;
+        window.location.reload();
+    })
+    let current_folder = window.location.pathname;
+    data.append('path', window.location.pathname);
+    xhr.open('post', '/upload');
+    xhr.send(data);
 
 })
 

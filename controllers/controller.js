@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import { validationResult } from 'express-validator';
 import queries from "../db/queries.js";
 import { name } from "ejs";
+import upload from "../lib/upload.js";
 
 
 
@@ -69,7 +70,7 @@ async function handleViewFolder(req, res) {
     let folder = await queries.getFileById(folder_id, req.user.id);
     let parent = folder.parent_id;
 
-    console.log(parent, "************");
+    // console.log(parent, "************");
     res.render('home', { content, parent });
 }
 
