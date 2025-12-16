@@ -81,6 +81,7 @@ let files = document.querySelectorAll('.file-container');
 let imagePreviewContainer = document.querySelector('.image-preview-container');
 let imagePreview = document.querySelector('.image-preview');
 let videoPreview = document.querySelector('.video-preview');
+let download = document.querySelector('.download-media');
 files.forEach((f) => {
     if (!f.dataset.type.startsWith('image') && !f.dataset.type.startsWith('video')) {
         f.addEventListener('click', (e) => {
@@ -96,6 +97,9 @@ files.forEach((f) => {
             videoPreview.classList.add('hide');
             imagePreview.classList.remove('hide');
             imagePreview.src = f.dataset.link;
+            download.href = f.dataset.link + '?download';
+            download.classList.remove('hide');
+
         })
     }
     else if (f.dataset.type.startsWith('video')) {
@@ -104,6 +108,8 @@ files.forEach((f) => {
             videoPreview.classList.remove('hide');
             videoPreview.src = f.dataset.link;
             videoPreview.play();
+            download.href = f.dataset.link + '?download';
+            download.classList.remove('hide');
         })
     }
 

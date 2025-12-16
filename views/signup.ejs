@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/normalize.css">
-    <link rel="stylesheet" href="/signup.css">
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/signup.css">
     <title>Sign Up</title>
 </head>
 
@@ -14,11 +14,16 @@
         <div class="main-content">
             <div class="logo-section">
                 <div class="logo-wrapper">
-                    <img class="logo" src="/logo.png" alt="Safe Logo">
+                    <img class="logo" src="/images/logo.png" alt="Safe Logo">
                     <h1 class="logo-name">Safe</h1>
                 </div>
                 <h1>create your account</h1>
                 <p class="hook">Start storing your files securely today</p>
+                <% if (messages.length) { %>
+                    <p style="color: tomato;">
+                        <%= messages[0].msg%>
+                    </p>
+                    <% } %>
             </div>
             <form action="/signup" method="post">
                 <div class="input-wrapper">

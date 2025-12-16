@@ -10,26 +10,38 @@ datasource db {
   provider = "postgresql"
 }
 
-model Users {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
+model users {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
   name     String?
   password String
   files    files[]
+  folders  folders[]
+}
+
+model folders {
+  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  name      String
+  parent    folders?  @relation("folder_parent", fields: [parent_id], references: [id])
+  parent_id String?
+  folders   folders[] @relation("folder_parent")
+  files     files[]
+  owner     users     @relation(fields: [usersId], references: [id])
+  usersId   Int
 }
 
 model files {
-  id        String  @id @default(dbgenerated("gen_random_uuid()"))
-  parent_id String?
-  parent    files?  @relation("file_parent", fields: [parent_id], references: [id])
-  childrens files[] @relation("file_parent")
-  name      String
-  size      Int?
-  link      String?
-  type      String
-  extension String?
-  owner     Users   @relation(fields: [usersId], references: [id])
-  usersId   Int
+  id           String   @id @default(dbgenerated("gen_random_uuid()"))
+  parent_id    String?
+  usersId      Int
+  name         String
+  size         Int?
+  url          String?
+  type         String?
+  created_at   DateTime @default(now())
+  storage_name String
+  parent       folders? @relation(fields: [parent_id], references: [id])
+  owner        users    @relation(fields: [usersId], references: [id])
 }
 
 model Session {

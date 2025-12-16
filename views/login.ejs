@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/normalize.css">
-    <link rel="stylesheet" href="/login.css">
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/login.css">
     <title>Sign Up</title>
 </head>
 
@@ -14,10 +14,18 @@
         <div class="main-content">
             <div class="logo-section">
                 <div class="logo-wrapper">
-                    <img class="logo" src="/logo.png" alt="Safe logo">
+                    <img class="logo" src="/images/logo.png" alt="Safe logo">
                     <h1 class="logo-name">Safe</h1>
                 </div>
                 <h1>Welcome Back</h1>
+                <p>
+                    <% if (messages.length) { %>
+                        <p style="color: tomato;">
+                            <%= messages[0] %>
+                        </p>
+
+                        <% } %>
+                </p>
             </div>
             <form action="/login" method="post">
                 <div class="input-wrapper">
@@ -26,12 +34,11 @@
                 </div>
                 <div class="input-wrapper">
                     <label for="email">Password</label>
-                    <input type="password" name="password" id="password" autocomplete="new-password">
+                    <input type="password" name="password" id="password" autocomplete="current-password">
                 </div>
                 <button type="submit">Sign in</button>
             </form>
             <p class="signin">don't have account yet ? <a href="/signup">Register</a></p>
-
 
         </div>
 

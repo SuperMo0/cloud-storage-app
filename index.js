@@ -1,12 +1,18 @@
-import express from 'express';
-import controller from './controllers/controller.js';
 import dotenv from 'dotenv';
 dotenv.config();
+import express from 'express';
+import loginRouter from './routes/login.js'
+import signupRouter from './routes/signup.js'
+import homeRouter from './routes/home.js'
+
+
+
 import session from './lib/session.js';
-import validate from './lib/validate.js'
+import * as validator from './lib/validator.js'
 import passport from './lib/passport.js';
 import multer from 'multer';
 const app = express();
+
 let upload = multer();
 
 app.set('view engine', 'ejs');
@@ -17,18 +23,22 @@ app.use(express.static('./node_modules/@fortawesome/fontawesome-free'));
 app.use(session);
 app.use(passport.authenticate('session'));
 
+app.use('/login', loginRouter);
+app.use('/signup', signupRouter);
+app.use('/home', homeRouter)
 
 
-app.get('/signup', controller.renderSignup);
-app.get('/login', controller.renderLogin);
-app.get('/', controller.renderHome)
-app.get('/folder/:id', controller.handleViewFolder)
+// app.get('/folder/:id', controller.handleViewFolder)
 
 
-app.post('/signup', express.urlencoded({ extended: false }), validate.validateNewUser, controller.handleNewUser);
-app.post('/login', express.urlencoded({ extended: false }), passport.authenticate('local'), controller.renderHome);
-app.post('/upload', upload.single('file'), controller.handleUploadFile);
+// app.post('/upload', upload.single('file'), controller.handleUploadFile);
 
-app.post('/{*splat}', express.urlencoded({ extended: false }), controller.handleNewFolder);
+
+// app.post('/{*splat}', express.urlencoded({ extended: false }), controller.handleNewFolder);
+
+
+app.use((error, req, res, next) => {
+    res.render('error');
+})
 
 app.listen(3000);

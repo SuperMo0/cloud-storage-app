@@ -1,18 +1,22 @@
 import prismaClient from '../lib/prisma.js'
 
 async function insertUser(user) {
-    prismaClient.users.create({
-        data: {
-            name: user.email,
-            email: user.email,
-            password: user.password,
-        }
-    }).then().catch((e) => { throw e });
+    try {
+        let response = await prismaClient.users.create({
+            data: {
+                name: user.email,
+                email: user.email,
+                password: user.password,
+            },
+        })
+        return response;
+    }
+    catch (e) {
+        throw e;
+    }
 }
 
-async function insertFile(file) {
-
-    console.log(file.parent_id);
+/*async function insertFile(file) {
 
     prismaClient.files.create({
         data: {
@@ -28,7 +32,7 @@ async function insertFile(file) {
         console.log('err');
     })
 
-}
+}*/
 
 async function checkIfUserExist(email) {
     const res = await prismaClient.users.findFirst({
@@ -40,42 +44,63 @@ async function checkIfUserExist(email) {
     return false;
 }
 
-async function getUserByEmail(email) {
-    const res = await prismaClient.users.findFirst({
-        where: {
-            email: email
-        }
-    })
-    return res;
-}
 
-async function getUserByid(id) {
+/*async function getUserByid(id) {
     const res = await prismaClient.users.findFirst({
         where: {
             id: id
         }
     })
     return res;
-}
+}*/
 
-async function getUserFilesById(id, parent) {
+/*async function getUserFilesById(id, parent) {
     const res = await prismaClient.files.findMany({
         where: {
             AND: { usersId: id, parent_id: parent }
         }
     })
     return res;
+}*/
+
+async function getAllUserFolders(id) {
+
+    try {
+        const res = await prismaClient.folders.findMany({
+            where: {
+                usersId: id
+            }
+        })
+        return res;
+
+    } catch (error) {
+        throw error
+    }
+}
+
+async function getAllUserFiles(id) {
+    try {
+        const res = await prismaClient.files.findMany({
+            where: {
+                usersId: id
+            }
+        })
+        return res;
+
+    } catch (error) {
+
+    }
 }
 
 
-async function getFileById(id, user_id) {
+/*async function getFileById(id, user_id) {
     const res = await prismaClient.files.findFirst({
         where: {
             AND: { id: id, usersId: user_id }
         }
     })
     return res;
-}
+}*/
 
 
-export default { insertUser, checkIfUserExist, insertFile, getUserFilesById, getUserByEmail, getUserByid, getFileById }
+export default { insertUser, checkIfUserExist, getAllUserFiles, getAllUserFolders }
