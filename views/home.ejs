@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/normalize.css">
-    <link rel="stylesheet" href="/css/home.css">
     <link rel="stylesheet" href="/css/all.min.css">
     <link rel="stylesheet" href="/css/regular.min.css">
+    <link rel="stylesheet" href="/css/home.css">
     <script src="/js/homeScript.js" defer></script>
     <title>Safe</title>
 </head>
@@ -19,12 +19,17 @@
 
             <div class="logo-wrapper">
                 <img class="logo" src="/images/logo.png" alt="">
-                <h1 class="logo-name">Safe Home Page</h1>
+                <h1 class="logo-name">Safe Cloud</h1>
             </div>
 
             <input class="search-bar" placeholder="Search your files..." type="text">
-            <div class="user-icon">
-                <i class="fa-solid fa-user"></i>
+            <div class="user-container">
+                <div class="user-icon">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="options hide">
+                    <button class="safe-button logout">logout</button>
+                </div>
             </div>
 
         </header>
@@ -44,7 +49,6 @@
                     </form>
                 </div>
 
-
                 <a href="/home" class="side-bar-item">
                     <i class="fa-regular fa-hard-drive"></i>
                     <p>My Drive</p>
@@ -55,10 +59,8 @@
                     <p>Shared</p>
                 </a>
 
-                <a href="/home/trash" class="side-bar-item">
-                    <i class="fa-regular fa-trash-can"></i>
-                    <p>Trash</p>
-                </a>
+                <button class="safe-button toggle-delete-button"> <i class="fa-regular fa-trash-can"></i> Delete
+                    Files</button>
 
 
                 <form enctype="multipart/form-data" id="file-form">
@@ -92,6 +94,7 @@
                     <div class="folders-container">
 
                         <div data-id='element.id' class="folder-container hide">
+                            <i class="fa-solid fa-delete-left delete-button hide"></i>
                             <i class="fa-solid fa-folder"></i>
                             <p class="folder-name">ssdfsd</p>
                         </div>
@@ -105,6 +108,7 @@
                     <div class="files-container">
 
                         <div class="file-container media hide">
+                            <i class="fa-solid fa-delete-left delete-button hide"></i>
                             <i class="fa-solid fa-photo-film"></i>
                             <p class="file-name"></p>
                             <p class="file-size"></p>
@@ -112,6 +116,7 @@
                         </div>
 
                         <div class="file-container pdf hide">
+                            <i class="fa-solid fa-delete-left delete-button hide"></i>
                             <i class="fa-regular fa-file-pdf pdf-file"></i>
                             <p class="file-name"></p>
                             <p class="file-size"></p>
@@ -119,6 +124,7 @@
                         </div>
 
                         <div class="file-container general hide">
+                            <i class="fa-solid fa-delete-left delete-button hide"></i>
                             <i class="fa-regular fa-file-lines general-file"></i>
                             <p class="file-name"></p>
                             <p class="file-size"></p>
@@ -144,6 +150,9 @@
             </div>
     </div>
     </section>
+    </div>
+    <div class="notification">
+        link is copied to your clipboard
     </div>
 </body>
 

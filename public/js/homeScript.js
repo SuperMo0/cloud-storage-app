@@ -1,3 +1,4 @@
+import { cookie } from "express-validator";
 
 
 (function handleDropdown() {
@@ -27,6 +28,8 @@ let pathList = ['My Drive'];
     files = JSON.parse(mainContent.dataset.files);
 
     currentLocation = mainContent.dataset.currentlocation;
+    console.log(currentLocation);
+
 
     for (let folder of folders) {
         foldersMap.set(folder.id, { name: folder.name, id: folder.id, parent_id: folder.parent_id, folders: [], files: [] });
@@ -90,8 +93,19 @@ let filesOperations = (function handleFilesOperations() {
         let res = await fetch('/home/share', { method: "post", body: new URLSearchParams(data) });
         res = await res.json();
         let url = res.url
-        console.log(url);
+        navigator.clipboard.writeText(url);
+        showNotification('Link is copied to your clipboard');
     })
+
+    function showNotification(message) {
+        let notification = document.querySelector('.notification');
+        notification.textContent = message;
+        notification.classList.add('visable');
+        setTimeout(() => {
+            notification.classList.remove('visable');
+        }, 3000)
+
+    }
 
     function isMedia(type) {
         if (type.startsWith('image') || type.startsWith('video')) return true;
@@ -191,6 +205,16 @@ let filesOperations = (function handleFilesOperations() {
     let generalFileTemplate = document.querySelector('.file-container.general').cloneNode(true);
     generalFileTemplate.classList.remove('hide');
 
+    let handleDelete = async function (file_id) {
+
+        let res = await fetch('/home', {
+            method: 'delete',
+            body: new URLSearchParams({ id: file_id, location: currentLocation.id })
+        })
+        if (res.ok) location.replace('/home');
+        else location.replace('/error');
+    }
+
     let showDirecotory = function (folder) {
         filesContainer.replaceChildren();
         foldersContainer.replaceChildren();
@@ -198,8 +222,13 @@ let filesOperations = (function handleFilesOperations() {
         for (let f of folder.folders) {
             let newFolder = folderTemplate.cloneNode(true);
             newFolder.querySelector('.folder-name').textContent = f.name;
-            newFolder.onclick = () => { filesOperations.clearPreviews(); pathList.push(f.name); showDirecotory(f); currentLocation = f }
+            newFolder.onclick = (e) => {
+                if (e.target.classList.contains('delete-button')) return;
+                filesOperations.clearPreviews(); pathList.push(f.name); showDirecotory(f); currentLocation = f
+            }
+            let deleteButton = newFolder.querySelector('.delete-button');
             foldersContainer.appendChild(newFolder);
+            deleteButton.onclick = () => { handleDelete(f.id) };
         }
 
         for (let f of folder.files) {
@@ -212,7 +241,7 @@ let filesOperations = (function handleFilesOperations() {
             newFile.querySelector('.file-name').textContent = f.name;
             newFile.querySelector('.file-size').textContent = (f.size / 1000000) + "MB";
             newFile.querySelector('.file-creation-time').textContent = f.created_at;
-            newFile.onclick = () => { filesOperations.handleFileClick(f) };
+            newFile.onclick = (e) => { if (e.target.classList.contains('delete-button')) return; filesOperations.handleFileClick(f) };
 
             filesContainer.appendChild(newFile);
         }
@@ -310,3 +339,22 @@ let filesOperations = (function handleFilesOperations() {
 
 
 })()
+
+let toggleDeleteButton = document.querySelector('.toggle-delete-button');
+toggleDeleteButton.onclick = () => {
+    let deleteButton = document.querySelectorAll('.delete-button');
+    deleteButton.forEach((e) => {
+        e.classList.toggle('hide');
+    });
+}
+
+let icon = document.querySelector('.user-icon');
+let options = document.querySelector('.options');
+icon.onclick = () => { options.classList.toggle('hide') };
+
+
+let logout = document.querySelector('.logout');
+logout.onclick = () => { fetch('/login', { method: 'delete' }).then((res) => { location.replace('/login'); }) }
+
+
+// logout.onclick = () => { fetch('/login', { method: 'delete' }) }

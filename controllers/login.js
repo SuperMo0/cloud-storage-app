@@ -18,6 +18,7 @@ export function logout(req, res, next) {
     req.logout((err) => {
         if (err) return next(err);
         res.clearCookie('connect.sid');
-        res.redirect('login');
+        res.send('ok');
+        // res.redirect('login');
     })
 }

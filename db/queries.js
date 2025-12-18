@@ -159,8 +159,58 @@ export async function insertSharedFile(data) {
 
     } catch (error) {
         console.log(error);
+        throw error;
+
+    }
+}
+
+
+export async function getAllSharedUserFiles(user_id) {
+
+    try {
+        let res = await prismaClient.share.findMany({
+            where: {
+                users_id: user_id,
+            },
+            select: {
+                file: {
+                    select: {
+                        name: true,
+                    }
+                },
+                url: true,
+                expires_at: true,
+            }
+        })
+        return res;
+
+    } catch (error) {
+        throw error;
+        console.log(error);
     }
 
+}
+
+export async function deleteById(id, user_id) {
+
+    try {
+        const res = await prismaClient.folders.deleteMany({
+            where: {
+                AND: { id: id, usersId: user_id }
+            }
+        })
+
+        res = await prismaClient.files.deleteMany({
+            where: {
+                AND: { id: id, usersId: user_id }
+            }
+        })
+
+        return res;
+
+    } catch (error) {
+        throw error;
+    }
 
 
 }

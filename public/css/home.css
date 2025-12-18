@@ -42,6 +42,7 @@
     position: relative;
     overflow: hidden;
     cursor: pointer;
+    position: relative;
 }
 
 .fa-user {
@@ -142,8 +143,10 @@
 .side-bar-item p {
     font-size: var(--xl);
 }
-
-
+.fa-trash-can{
+    font-size: 15px;
+    color: white;
+}
 
 /*-----------------------------------------End of left side bar styles-----------------*/
 
@@ -215,11 +218,7 @@
     overflow: hidden;
     white-space: nowrap;
     cursor: pointer;
-}
-
-
-.file-container i {
-    font-size: 40px;
+    position: relative;
 }
 
 .file-container {
@@ -229,6 +228,7 @@
     padding: 5px;
     cursor: pointer;
     margin-bottom: 8px;
+    position: relative;
 }
 
 .file-container:hover {
@@ -236,6 +236,7 @@
 }
 
 .fa-file-pdf {
+    font-size: 40px;
     color: rgb(253, 69, 36);
 
 }
@@ -245,10 +246,12 @@
 }
 
 .fa-photo-film {
+    font-size: 40px;
     color: #60aaff;
 }
 
 .fa-file-lines {
+    font-size: 40px;
     color: rgb(60, 165, 78);
 }
 
@@ -257,6 +260,26 @@
     color: #444444;
     margin-bottom: 20px;
 }
+
+.delete-button{
+    color: tomato;
+    position: absolute;
+}
+.delete-button:hover
+{
+    transform: scale(1.2);
+}
+
+.folder-container .delete-button
+{
+    right: 0;
+}
+
+.file-container .delete-button
+{
+    right: -25px;
+}
+
 
 /*-----------------------------------------End of file explorer styles-----------------*/
 
@@ -339,4 +362,36 @@
     margin-top: 20px;
     border: 1px solid var(--main-blue);
     padding: 5px;
+}
+
+
+.notification{
+    padding: 5px;
+    background-color: #6eb2ff;
+    color: white;
+    position: fixed;
+    bottom: 200px;
+    right: 50px;
+    transition: transform 0.5s ease-in-out;
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.visable
+{
+    transform: none;
+    opacity: 1;
+}
+
+.options
+{
+    position: absolute;
+    background-color: #60aaff;
+    right: 0;
+    padding: 10px;
+
+}
+.user-container
+{
+    position: relative;
 }

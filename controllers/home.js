@@ -1,6 +1,7 @@
 import { locales } from "validator/lib/isIBAN.js";
 import * as queries from "../db/queries.js";
 import supbase from '../lib/supbase.js'
+import { time } from './../lib/misc.js'
 
 
 export function handleAuthorization(req, res, next) {
@@ -34,47 +35,33 @@ export async function handleNewShare(req, res) {
 
     let duration = req.body.duration;
 
-
     let file = await queries.getFileById(file_id, req.user.id);
+
 
     if (!file) {
         return next('no file exist');
     }
 
-    let url = await supbase.getFileUrl(file.path, duration * 60 * 60, req.query.download);
+    // let url = await supbase.getFileUrl(file.path, duration * 60 * 60, req.query.download);
+    let url = '22';
 
     let expires_at = new Date();
 
     expires_at.setTime(expires_at.getTime() + duration * 60 * 60 * 1000);
-
-    expires_at = Intl.DateTimeFormat('en-US', {
-        year: "numeric",
-        month: "2-digit",
-        day: "numeric",
-        hour12: true,
-        hour: "numeric",
-    }).format(expires_at);
+    expires_at = time.format(expires_at);
 
     let share = await queries.insertSharedFile({ user_id: req.user.id, file_id, url, expires_at });
 
     res.json({ url });
 
 }
-export async function renderShared(req, res) {
-
-    res.send('ok');
-    /* try {
-         let folders = await queries.getAllUserFolders();
-         folders = JSON.stringify(folders);
- 
-         let files = await queries.getAllUserFiles();
-         files = JSON.stringify(files);
- 
-         res.render('home', { folders, files, currentLocation });
-     } catch (error) {
-         next(error);
-     }*/
-
+export async function renderShared(req, res, next) {
+    try {
+        let files = await queries.getAllSharedUserFiles(req.user.id);
+        res.render('shared', { files });
+    } catch (error) {
+        next(error);
+    }
 }
 
 export async function handleNewFolder(req, res, next) {
@@ -111,8 +98,6 @@ export async function handleNewFile(req, res, next) {
 
     let currentLocation = req.body.location;
     req.session.currentLocation = currentLocation;
-    console.log(currentLocation);
-
     try {
 
         let path = await supbase.uploadSingleFile(req.file);
@@ -139,6 +124,24 @@ export async function handleRequestFile(req, res, next) {
     let url = await supbase.getFileUrl(file.path, 10, req.query.download);
     res.json({ url });
 }
+
+
+export async function handleDelete(req, res, next) {
+
+    let currentLocation = req.body.location;
+    req.session.location = currentLocation;
+
+    let id = req.body.id;
+    try {
+        let res = await queries.deleteById(id, req.user.id);
+        res.redirect('/home');
+    }
+    catch (e) {
+        next(e);
+    }
+}
+
+
 
 
 

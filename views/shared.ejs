@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/shared.css">
+    <link rel="stylesheet" href="/css/all.min.css">
+    <link rel="stylesheet" href="/css/regular.min.css">
+    <title>Safe</title>
+</head>
+
+<body>
+
+    <div class="page">
+        <header class="header-wrapper">
+
+            <div class="logo-wrapper">
+                <img class="logo" src="/images/logo.png" alt="">
+                <h1 class="logo-name">Safe Cloud</h1>
+            </div>
+
+            <input class="search-bar" placeholder="Search your files..." type="text">
+            <div class="user-icon">
+                <i class="fa-solid fa-user"></i>
+            </div>
+
+        </header>
+        <section class="main">
+
+            <div class="side-bar">
+
+                <a href="/home" class="side-bar-item">
+                    <i class="fa-regular fa-hard-drive"></i>
+                    <p>My Drive</p>
+                </a>
+
+                <a href="/home/shared" class="side-bar-item">
+                    <i class="fa-regular fa-share-from-square"></i>
+                    <p>Shared</p>
+                </a>
+            </div>
+
+            <div class="main-content">
+                <h1>Shared Files </h1>
+
+                <div class="shared-files-container">
+
+                    <% files.forEach(file=> { %>
+
+                        <div class="shared-file-container">
+                            <i class="fa-regular fa-file"></i>
+                            <p>
+                                <%= file.file.name %>
+                            </p>
+                            <button data-url="<%= file.url %>"
+                                onclick="copy(this);showNotification('link is copied to your clipboard')"
+                                class="safe-button"> <i class="fa-regular fa-share-from-square"></i>
+                                copy link</button>
+                            <p>valid till
+                            </p>
+                            <p>
+                                <%= file.expires_at %>
+                            </p>
+                        </div>
+
+                        <% }) %>
+                            <script defer> function copy(b) { navigator.clipboard.writeText(b.dataset.url) }
+                                function showNotification(message) {
+                                    let notification = document.querySelector('.notification');
+                                    notification.textContent = message;
+                                    notification.classList.add('visable');
+                                    setTimeout(() => {
+                                        notification.classList.remove('visable');
+                                    }, 3000)
+
+                                }
+
+                            </script>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+    <div class="notification">
+        link is copied to your clipboard
+    </div>
+</body>
+
+</html>

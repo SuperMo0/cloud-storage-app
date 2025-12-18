@@ -2,7 +2,6 @@ import { Router } from "express";
 import * as controller from './../controllers/home.js'
 import multer from 'multer';
 import express from "express";
-// import passport from "./../lib/passport.js";
 
 let upload = multer();
 
@@ -24,6 +23,7 @@ router.post('/file', upload.single('file'), controller.handleNewFile);
 router.post('/share', express.urlencoded({ extended: false }), controller.handleNewShare);
 
 
+router.delete('/', express.urlencoded({ extended: false }), controller.handleDelete);
 
 
 export default router
