@@ -1,5 +1,3 @@
-import { cookie } from "express-validator";
-
 
 (function handleDropdown() {
     const newFolderDropdown = document.querySelector('.new-folder-dropdown');
@@ -128,29 +126,32 @@ let filesOperations = (function handleFilesOperations() {
             img.src = url;
             imagePreviewContainer.appendChild(img);
         }
-        else {
+        else if (f.type.startsWith('video')) {
             video.src = url;
             video.play()
             imagePreviewContainer.appendChild(video);
         }
-
+        else {
+            imagePreviewContainer.textContent = f.name;
+        }
         download.file = f;
-
     }
 
     download.onclick = () => {
         handleFileDownload(download.file);
     }
 
-    async function handleFileClick(file) {
+    async function handleFileClick(file) {       // 
         let res = await fetch('/home/file/' + file.id);
         res = await res.json();
         let url = res.url;
         if (isMedia(file.type)) handlePreview(file, url);
         else if (isPdf(file.type)) {
+            handlePreview(file, url)
 
         }
         else {
+            handlePreview(file, url)
 
         }
 
