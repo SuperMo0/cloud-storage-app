@@ -52,7 +52,3 @@ A secure, efficient file storage and sharing application built with Node.js. It 
 ---
 
 
-
-
-
-This project is open source and available under the [MIT License](LICENSE).
