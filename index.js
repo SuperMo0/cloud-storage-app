@@ -1,10 +1,11 @@
-import './config.js'
+import 'dotenv/config';
 import express from 'express';
 import loginRouter from './routes/login.js'
 import signupRouter from './routes/signup.js'
 import homeRouter from './routes/home.js'
 import session from './lib/session.js';
 import passport from './lib/passport.js';
+
 
 const app = express();
 

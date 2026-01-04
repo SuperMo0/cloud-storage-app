@@ -27,13 +27,15 @@ export async function handleNewUser(req, res, next) {
 
     try {
         user = await queries.insertUser(user);
-        await queries.createRootFolder(user.id);
+        let rootId = await queries.createRootFolder(user.id);
         req.login(user, (e) => {
             if (e) throw e;
+            req.session.rootId = rootId;
             res.redirect('/home');
         });
 
     } catch (error) {
+        console.log(error);
         next(error)
     }
 }

@@ -21,7 +21,6 @@ router.post('/guest', (req, res, next) => {
     req.body.name = 'guest';
     req.body.password = '123';
     next();
-
 }, controller.handleNewUser)
 
 

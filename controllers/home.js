@@ -11,17 +11,22 @@ export function handleAuthorization(req, res, next) {
 
 export async function renderHome(req, res) {
 
-    let currentLocation = req.session.location || '0';
-    req.session.location = null;
+    let currentLocation = req.query?.location || req.session.rootId;
+
+    if (currentLocation == null) {
+        currentLocation = await queries.getRootFolder(req.user.id);
+        req.session.rootId = currentLocation;
+    }
+
 
     try {
-        let folders = await queries.getAllUserFolders();
+        let folders = await queries.getAllUserFolders(req.user.id);
         folders = JSON.stringify(folders);
 
-        let files = await queries.getAllUserFiles();
+        let files = await queries.getAllUserFiles(req.user.id);
         files = JSON.stringify(files);
 
-        res.render('home', { folders, files, currentLocation });
+        res.render('home', { folders, files, currentLocation, rootId: req.session.rootId });
     } catch (error) {
         next(error);
     }
@@ -79,11 +84,11 @@ export async function handleNewFolder(req, res, next) {
         return next(error)
     }
 
-    req.session.location = location;
-    res.redirect('/home');
+    res.redirect(`/home?location=${location}`);
 }
 
 function createFileObject(req, path, location) {
+
     let file = {};
     file.name = req.file.originalname;
     file.size = req.file.size;
@@ -91,21 +96,22 @@ function createFileObject(req, path, location) {
     file.type = req.file.mimetype;
     file.user_id = req.user.id
     file.parent_id = location;
+
+
     return file;
 }
 
 export async function handleNewFile(req, res, next) {
 
-    let currentLocation = req.body.location;
-    req.session.currentLocation = currentLocation;
+    let location = req.body.location || req.session.rootId;
     try {
 
         let path = await supbase.uploadSingleFile(req.file);
 
-        let file = createFileObject(req, path, currentLocation);
+        let file = createFileObject(req, path, location);
 
         await queries.insertFile(file);
-        res.redirect('/home');
+        res.redirect(`/home?location=${location}`);
     }
     catch (e) {
         next(e);

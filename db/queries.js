@@ -34,14 +34,14 @@ export async function insertFolder(folder) {
 export async function createRootFolder(user_id) {
 
     try {
-        await prismaClient.folders.create({
+        let res = await prismaClient.folders.create({
             data: {
-                id: "0",
                 name: "root",
-                parent_id: '0',
                 usersId: user_id,
             }
         })
+        return res.id;
+
     } catch (error) {
         throw error
     }
@@ -51,19 +51,22 @@ export async function createRootFolder(user_id) {
 
 
 export async function insertFile(file) {
+    try {
+        let res = await prismaClient.files.create({
+            data: {
+                name: file.name,
+                path: file.path,
+                size: file.size,
+                type: file.type,
+                parent_id: file.parent_id,
+                usersId: file.user_id,
+            }
+        })
+    } catch (error) {
+        console.log(error);
+        throw error
+    }
 
-    prismaClient.files.create({
-        data: {
-            name: file.name,
-            path: file.path,
-            size: file.size,
-            type: file.type,
-            parent_id: file.parent_id,
-            usersId: file.user_id,
-        }
-    }).catch((err) => {
-        console.log('err');
-    })
 
 }
 
@@ -185,8 +188,8 @@ export async function getAllSharedUserFiles(user_id) {
         return res;
 
     } catch (error) {
-        throw error;
         console.log(error);
+        throw error;
     }
 
 }
@@ -211,6 +214,27 @@ export async function deleteById(id, user_id) {
     } catch (error) {
         throw error;
     }
+}
+
+
+export async function getRootFolder(userId) {
+    try {
+        let res = await prismaClient.folders.findFirst({
+            where: {
+                AND: {
+                    parent_id: null,
+                    usersId: userId,
+                }
+            }
+
+        })
+
+        return res.id;
+
+    } catch (error) {
+        throw error;
+    }
+
 
 
 }

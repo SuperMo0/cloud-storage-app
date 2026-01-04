@@ -10,7 +10,7 @@ export function renderLogin(req, res) {
 }
 
 export function redirectHome(req, res) {
-    res.redirect('/login')
+    res.redirect('/home')
 }
 
 export function logout(req, res, next) {

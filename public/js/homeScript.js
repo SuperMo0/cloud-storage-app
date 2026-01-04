@@ -29,23 +29,23 @@
 })();
 
 
-
+let mainContent = document.querySelector('.main-content');
 let folders = [];
 let files = [];
 let foldersMap = new Map();
-let root = 0;
+let root = mainContent.dataset.rootid;
+
 let currentLocation = root;
 let pathList = ['My Drive'];
 
 (function populate() {
-    let mainContent = document.querySelector('.main-content');
+
 
     folders = JSON.parse(mainContent.dataset.folders);
 
     files = JSON.parse(mainContent.dataset.files);
 
     currentLocation = mainContent.dataset.currentlocation;
-    console.log(currentLocation);
 
 
     for (let folder of folders) {
@@ -53,11 +53,12 @@ let pathList = ['My Drive'];
     }
 
     for (let folder of folders) {
-        if (folder.parent_id == folder.id) continue;
+        if (folder.parent_id == null) continue;
         foldersMap.get(folder.parent_id).folders.push(folder);
     }
 
     for (let file of files) {
+
         foldersMap.get(file.parent_id).files.push(file);
     }
 
@@ -78,8 +79,7 @@ let pathList = ['My Drive'];
         }
         return currentLocation;
     }
-
-    root = builder(foldersMap.get('0'), foldersMap.get('0'));
+    root = builder(foldersMap.get(root), null);
 })();
 
 
@@ -206,18 +206,23 @@ let filesOperations = (function handleFilesOperations() {
 (function handleNavigation() {
 
     currentLocation = foldersMap.get(currentLocation);
+
     let crnt = currentLocation;
-    while (crnt.id != 0) {
-        pathList.push(crnt.name);
+    let lst = []
+    while (crnt.id != root && crnt.parent != null) {
+        lst.push(crnt.name);
         crnt = crnt.parent;
     }
+    lst.reverse();
+    for (let pth of lst)
+        pathList.push(pth);
+
     foldersMap.clear();
     let foldersContainer = document.querySelector('.folders-container');
 
     let folderTemplate = document.querySelector('.folder-container').cloneNode(true);
 
     folderTemplate.classList.remove('hide');
-
 
     let filesContainer = document.querySelector('.files-container');
 
@@ -241,6 +246,9 @@ let filesOperations = (function handleFilesOperations() {
     }
 
     let showDirecotory = function (folder) {
+        let location = window.location.href;
+        location = location.split('?')[0] + `?location=${folder.id}`
+        window.history.pushState({}, '', location);
         filesContainer.replaceChildren();
         foldersContainer.replaceChildren();
 
@@ -258,7 +266,6 @@ let filesOperations = (function handleFilesOperations() {
 
         for (let f of folder.files) {
             let newFile;
-
             if (filesOperations.isMedia(f.type)) newFile = mediaFileTemplate.cloneNode(true);
             else if (f.type === 'application/pdf') newFile = pdfFileTemplate.cloneNode(true);
             else newFile = generalFileTemplate.cloneNode(true);
@@ -294,15 +301,12 @@ let filesOperations = (function handleFilesOperations() {
 
     let newFolderFormMobile = document.querySelector('.new-folder-form-mobile');
 
-
-
     newFolderForm.addEventListener('submit', (e) => {
         let location = newFolderForm.querySelector('#location');
         location.value = currentLocation.id;
     })
 
     newFolderFormMobile.addEventListener('submit', (e) => {
-        console.log('here........');
         let location = newFolderFormMobile.querySelector('#location');
         location.value = currentLocation.id;
     })
