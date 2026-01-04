@@ -6,8 +6,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate":"npx prisma migrate dev --name Safe ",
-    "generate":"npx prisma generate"
+    "migrate": "npx prisma migrate dev --name Safe ",
+    "generate": "npx prisma generate",
+    "start": "node index.js",
+    "postinstall": "npx prisma generate"
   },
   "author": "",
   "license": "ISC",
