@@ -236,6 +236,7 @@ let filesOperations = (function handleFilesOperations() {
     generalFileTemplate.classList.remove('hide');
 
     let handleDelete = async function (file_id) {
+        console.log('running');
 
         let res = await fetch('/home', {
             method: 'delete',
@@ -262,6 +263,7 @@ let filesOperations = (function handleFilesOperations() {
             let deleteButton = newFolder.querySelector('.delete-button');
             foldersContainer.appendChild(newFolder);
             deleteButton.onclick = () => { handleDelete(f.id) };
+
         }
 
         for (let f of folder.files) {
@@ -271,11 +273,13 @@ let filesOperations = (function handleFilesOperations() {
             else newFile = generalFileTemplate.cloneNode(true);
 
             newFile.querySelector('.file-name').textContent = f.name;
-            newFile.querySelector('.file-size').textContent = (f.size / 1000000) + "MB";
-            newFile.querySelector('.file-creation-time').textContent = f.created_at;
+            newFile.querySelector('.file-size').textContent = ((f.size / 1000000)).toFixed(2) + "MB";
+            newFile.querySelector('.file-creation-time').textContent = f.created_at.slice(0, 10);
             newFile.onclick = (e) => { if (e.target.classList.contains('delete-button')) return; filesOperations.handleFileClick(f) };
-
             filesContainer.appendChild(newFile);
+            let deleteButton = newFile.querySelector('.delete-button');
+            deleteButton.onclick = () => { handleDelete(f.id) };
+
         }
         let path = document.querySelector('.path');
         path.textContent = pathList.join(' > ');

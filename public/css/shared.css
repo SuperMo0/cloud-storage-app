@@ -1,13 +1,19 @@
 /*-----------------------------------------start of Header Styles-----------------*/
 .page {
     padding-inline: 30px;
+    position: relative;
+    overflow-y: auto;
+    flex: 1;
+    border: 1px solid black;
 }
 
 body {
-    height: 100vh;
+    max-height: 100dvh;
+    height: 100dvh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .header-wrapper {
@@ -143,6 +149,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     padding-top: 20px;
+    overflow-y: scroll;
 }
 
 .shared-file-container {
