@@ -5,48 +5,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/signup.css">
-    <title>Sign Up</title>
+    <title>Safe Cloud - Sign Up</title>
 </head>
 
 <body>
     <section class="page">
         <div class="main-content">
+
             <div class="logo-section">
                 <div class="logo-wrapper">
-                    <img class="logo" src="/images/logo.png" alt="Safe Logo">
-                    <h1 class="logo-name">Safe</h1>
+                    <div class="logo-icon">
+                        <i class="fa-solid fa-cloud"></i>
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h1 class="logo-name">Safe<span>Cloud</span></h1>
                 </div>
-                <h1>create your account</h1>
-                <p class="hook">Start storing your files securely today</p>
+
+                <h1>Create Account</h1>
+                <p class="hook">Start storing your files securely today.</p>
+
                 <% if (messages.length) { %>
-                    <p style="color: tomato;">
-                        <%= messages[0].msg%>
-                    </p>
+                    <div class="error-msg">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>
+                            <%= messages[0].msg %>
+                        </span>
+                    </div>
                     <% } %>
             </div>
+
             <form action="/signup" method="post">
                 <div class="input-wrapper">
                     <label for="email">Email Address</label>
-                    <input type="email" name="email" id="email" autocomplete="email">
+                    <input type="email" name="email" id="email" autocomplete="email" placeholder="name@example.com"
+                        required>
                 </div>
                 <div class="input-wrapper">
                     <label for="password">Password</label>
-                    <input type="password" name="password" id="password" autocomplete="new-password">
+                    <input type="password" name="password" id="password" autocomplete="new-password"
+                        placeholder="••••••••" required>
                 </div>
                 <div class="input-wrapper">
                     <label for="confirm_password">Confirm Password</label>
-                    <input type="password" name="confirm_password" id="confirm_password" autocomplete="new-password">
+                    <input type="password" name="confirm_password" id="confirm_password" autocomplete="new-password"
+                        placeholder="••••••••" required>
                 </div>
                 <button type="submit">Create Account</button>
             </form>
-            <form action="signup/guest" method="post">
-                <button type="submit">login as guest</button>
+
+            <form action="/signup/guest" method="post">
+                <button type="submit">Login as Guest</button>
             </form>
-            <p class="signin">already have an account ? <a href="/login">Log in</a></p>
+
+            <p class="signin">Already have an account? <a href="/login">Log in</a></p>
 
         </div>
-
     </section>
 </body>
 

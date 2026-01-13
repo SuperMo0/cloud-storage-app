@@ -1,52 +1,43 @@
-
 (function handleDropdown() {
     const newFolderDropdown = document.querySelector('.new-folder-dropdown');
-
     const newFolderForm = document.querySelector('.new-folder-form');
 
-    newFolderDropdown.addEventListener("click", (e) => {
-        newFolderForm.classList.toggle('hide');
-    })
+    if (newFolderDropdown) {
+        newFolderDropdown.addEventListener("click", (e) => {
+            newFolderForm.classList.toggle('hide');
+        });
+    }
 
     const toggleNewFolderMobile = document.querySelector('.add-folder-mobile-toggle');
-    const newFolderPageMobile = document.querySelector('.create-folder-mobile')
+    const newFolderPageMobile = document.querySelector('.create-folder-mobile');
     const closeNewFolderPage = document.querySelector('.close-new-folder-page-button');
 
-    closeNewFolderPage.addEventListener('click', () => {
-        newFolderPageMobile.style['display'] = 'none';
+    if (closeNewFolderPage) {
+        closeNewFolderPage.addEventListener('click', () => {
+            newFolderPageMobile.classList.add('hide');
+        });
+    }
 
-    })
-    toggleNewFolderMobile.addEventListener("click", () => {
-        newFolderPageMobile.style['display'] = 'flex';
-    })
+    if (toggleNewFolderMobile) {
+        toggleNewFolderMobile.addEventListener("click", () => {
+            newFolderPageMobile.classList.remove('hide');
+        });
+    }
 })();
-
-
-(function handleSmallScreen() {
-
-
-
-})();
-
 
 let mainContent = document.querySelector('.main-content');
 let folders = [];
 let files = [];
 let foldersMap = new Map();
 let root = mainContent.dataset.rootid;
-
 let currentLocation = root;
 let pathList = ['My Drive'];
 
 (function populate() {
-
-
-    folders = JSON.parse(mainContent.dataset.folders);
-
-    files = JSON.parse(mainContent.dataset.files);
-
+    if (!mainContent) return;
+    folders = JSON.parse(mainContent.dataset.folders || "[]");
+    files = JSON.parse(mainContent.dataset.files || "[]");
     currentLocation = mainContent.dataset.currentlocation;
-
 
     for (let folder of folders) {
         foldersMap.set(folder.id, { name: folder.name, id: folder.id, parent_id: folder.parent_id, folders: [], files: [] });
@@ -54,35 +45,31 @@ let pathList = ['My Drive'];
 
     for (let folder of folders) {
         if (folder.parent_id == null) continue;
-        foldersMap.get(folder.parent_id).folders.push(folder);
+        let parent = foldersMap.get(folder.parent_id);
+        if (parent) parent.folders.push(folder);
     }
 
     for (let file of files) {
-
-        foldersMap.get(file.parent_id).files.push(file);
+        let parent = foldersMap.get(file.parent_id);
+        if (parent) parent.files.push(file);
     }
-
 })();
 
-
-
 (function buildTree() {
-
     let builder = function (currentLocation, parent) {
-
+        if (!currentLocation) return;
         currentLocation.parent = parent;
         for (let i = 0; i < currentLocation.folders.length; i++) {
             let child = currentLocation.folders[i];
             child = foldersMap.get(child.id);
             currentLocation.folders[i] = builder(child, currentLocation);
-
         }
         return currentLocation;
     }
-    root = builder(foldersMap.get(root), null);
+    if (foldersMap.get(root)) {
+        root = builder(foldersMap.get(root), null);
+    }
 })();
-
-
 
 let filesOperations = (function handleFilesOperations() {
 
@@ -90,29 +77,40 @@ let filesOperations = (function handleFilesOperations() {
     let img = document.createElement('img');
     let download = document.querySelector('.download-media');
     img.classList.add('image-preview');
+
     let video = document.createElement('video');
     video.setAttribute("loop", "true");
+    video.setAttribute("controls", "true");
     video.classList.add('video-preview');
 
     let shareButton = document.querySelector('.share-button');
     let shareForm = document.querySelector('.share-file-form');
 
-
-    shareButton.onclick = (e) => {
-        if (!download.file) return;
-        shareForm.classList.remove('hide');
+    if (shareButton) {
+        shareButton.onclick = (e) => {
+            if (!download.file) return;
+            shareForm.classList.remove('hide');
+        }
     }
 
-    shareForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        let data = new FormData(e.target);
-        data.append('file_id', download.file.id);
-        let res = await fetch('/home/share', { method: "post", body: new URLSearchParams(data) });
-        res = await res.json();
-        let url = res.url
-        navigator.clipboard.writeText(url);
-        showNotification('Link is copied to your clipboard');
-    })
+    if (shareForm) {
+        shareForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            let data = new FormData(e.target);
+            data.append('file_id', download.file.id);
+
+            try {
+                let res = await fetch('/home/share', { method: "post", body: new URLSearchParams(data) });
+                res = await res.json();
+                let url = res.url
+                navigator.clipboard.writeText(url);
+                showNotification('Link copied to clipboard');
+                shareForm.classList.add('hide');
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    }
 
     function showNotification(message) {
         let notification = document.querySelector('.notification');
@@ -121,111 +119,125 @@ let filesOperations = (function handleFilesOperations() {
         setTimeout(() => {
             notification.classList.remove('visable');
         }, 3000)
-
     }
 
     function isMedia(type) {
-        if (type.startsWith('image') || type.startsWith('video')) return true;
-        return false;
+        return (type.startsWith('image') || type.startsWith('video'));
     }
 
     function isPdf(type) {
-        if (type === 'application/json') return true;
-        return false;
+        return (type === 'application/pdf');
     }
 
     function clearPreviews() {
-        imagePreviewContainer.replaceChildren();
-        shareForm.classList.add('hide');
+        if (imagePreviewContainer) imagePreviewContainer.replaceChildren();
+        if (shareForm) shareForm.classList.add('hide');
     }
 
     function handlePreview(f, url) {
         const previewMobile = document.querySelector('.right-side-bar');
+
         if (window.innerWidth < 900) {
-            previewMobile.style.display = 'block';
+            previewMobile.style.display = 'flex';
         }
 
         clearPreviews();
+
+
+        if (!f) {
+            let p = document.createElement('p');
+            p.innerText = "Select a file to preview";
+            p.style.color = "var(--text-muted)";
+            imagePreviewContainer.appendChild(p);
+            return;
+        }
+
         if (f.type.startsWith('image')) {
             img.src = url;
             imagePreviewContainer.appendChild(img);
         }
         else if (f.type.startsWith('video')) {
             video.src = url;
-            video.play()
             imagePreviewContainer.appendChild(video);
         }
         else {
-            imagePreviewContainer.textContent = f.name;
+            let p = document.createElement('p');
+            p.textContent = f.name;
+            p.style.padding = "10px";
+            imagePreviewContainer.appendChild(p);
         }
-        download.file = f;
+
+        if (download) download.file = f;
     }
 
-    download.onclick = () => {
-        handleFileDownload(download.file);
+    if (download) {
+        download.onclick = () => {
+            handleFileDownload(download.file);
+        }
     }
 
     async function handleFileClick(file) {
-        let res = await fetch('/home/file/' + file.id);
-        res = await res.json();
-        let url = res.url;
-        if (isMedia(file.type)) handlePreview(file, url);
-        else if (isPdf(file.type)) {
-            handlePreview(file, url)
-
+        try {
+            let res = await fetch('/home/file/' + file.id);
+            res = await res.json();
+            let url = res.url;
+            handlePreview(file, url);
+        } catch (err) {
+            console.error(err);
         }
-        else {
-            handlePreview(file, url)
-
-        }
-
     }
 
     async function handleFileDownload(file) {
         if (!file) return;
-        let res = await fetch('/home/file/' + file.id + '?download=true');
-        res = await res.json();
-        let url = res.url;
-        let data = await fetch(url);
-        data = await data.blob();
-        data = URL.createObjectURL(data);
+        try {
+            let res = await fetch('/home/file/' + file.id + '?download=true');
+            res = await res.json();
+            let url = res.url;
 
-        let a = document.createElement('a');
-        a.setAttribute("download", file.name);
-        a.href = data;
-        a.click();
-        URL.revokeObjectURL(data);
+
+            let data = await fetch(url);
+            let blob = await data.blob();
+            let objUrl = URL.createObjectURL(blob);
+
+            let a = document.createElement('a');
+            a.setAttribute("download", file.name);
+            a.href = objUrl;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(objUrl);
+        } catch (err) {
+            console.error("Download failed", err);
+        }
     }
 
     return { handleFileClick, isMedia, isPdf, clearPreviews }
 
 })();
 
-
-
 (function handleNavigation() {
+    if (!foldersMap.get(currentLocation)) return;
 
     currentLocation = foldersMap.get(currentLocation);
 
+
+    pathList = ['My Drive'];
     let crnt = currentLocation;
-    let lst = []
+    let tempPath = [];
     while (crnt.id != root && crnt.parent != null) {
-        lst.push(crnt.name);
+        tempPath.push(crnt.name);
         crnt = crnt.parent;
     }
-    lst.reverse();
-    for (let pth of lst)
-        pathList.push(pth);
+    pathList = pathList.concat(tempPath.reverse());
 
-    foldersMap.clear();
     let foldersContainer = document.querySelector('.folders-container');
+    let folderTemplate = document.querySelector('.folder-container');
 
-    let folderTemplate = document.querySelector('.folder-container').cloneNode(true);
-
+    if (!folderTemplate) return;
+    folderTemplate = folderTemplate.cloneNode(true);
     folderTemplate.classList.remove('hide');
 
     let filesContainer = document.querySelector('.files-container');
-
     let mediaFileTemplate = document.querySelector('.file-container.media').cloneNode(true);
     mediaFileTemplate.classList.remove('hide');
 
@@ -236,20 +248,20 @@ let filesOperations = (function handleFilesOperations() {
     generalFileTemplate.classList.remove('hide');
 
     let handleDelete = async function (file_id) {
-        console.log('running');
+        if (!confirm("Are you sure you want to delete this?")) return;
 
         let res = await fetch('/home', {
             method: 'delete',
             body: new URLSearchParams({ id: file_id, location: currentLocation.id })
         })
-        if (res.ok) location.replace('/home');
-        else location.replace('/error');
+        if (res.ok) window.location.reload();
+        else alert('Error deleting file');
     }
 
     let showDirecotory = function (folder) {
-        let location = window.location.href;
-        location = location.split('?')[0] + `?location=${folder.id}`
-        window.history.pushState({}, '', location);
+        let locationUrl = window.location.href.split('?')[0] + `?location=${folder.id}`;
+        window.history.pushState({}, '', locationUrl);
+
         filesContainer.replaceChildren();
         foldersContainer.replaceChildren();
 
@@ -257,13 +269,19 @@ let filesOperations = (function handleFilesOperations() {
             let newFolder = folderTemplate.cloneNode(true);
             newFolder.querySelector('.folder-name').textContent = f.name;
             newFolder.onclick = (e) => {
-                if (e.target.classList.contains('delete-button')) return;
-                filesOperations.clearPreviews(); pathList.push(f.name); showDirecotory(f); currentLocation = f
+                if (e.target.classList.contains('delete-button') || e.target.closest('.delete-button')) return;
+                filesOperations.clearPreviews();
+                pathList.push(f.name);
+                showDirecotory(f);
+                currentLocation = f
             }
-            let deleteButton = newFolder.querySelector('.delete-button');
-            foldersContainer.appendChild(newFolder);
-            deleteButton.onclick = () => { handleDelete(f.id) };
 
+            let deleteButton = newFolder.querySelector('.delete-button');
+            deleteButton.onclick = (e) => {
+                e.stopPropagation();
+                handleDelete(f.id)
+            };
+            foldersContainer.appendChild(newFolder);
         }
 
         for (let f of folder.files) {
@@ -274,154 +292,161 @@ let filesOperations = (function handleFilesOperations() {
 
             newFile.querySelector('.file-name').textContent = f.name;
             newFile.querySelector('.file-size').textContent = ((f.size / 1000000)).toFixed(2) + "MB";
-            newFile.querySelector('.file-creation-time').textContent = f.created_at.slice(0, 10);
-            newFile.onclick = (e) => { if (e.target.classList.contains('delete-button')) return; filesOperations.handleFileClick(f) };
-            filesContainer.appendChild(newFile);
-            let deleteButton = newFile.querySelector('.delete-button');
-            deleteButton.onclick = () => { handleDelete(f.id) };
 
+            let dateEl = newFile.querySelector('.file-creation-time');
+            if (dateEl) dateEl.textContent = f.created_at.slice(0, 10);
+
+            newFile.onclick = (e) => {
+                if (e.target.classList.contains('delete-button') || e.target.closest('.delete-button')) return;
+                filesOperations.handleFileClick(f)
+            };
+
+            let deleteButton = newFile.querySelector('.delete-button');
+            deleteButton.onclick = (e) => {
+                e.stopPropagation();
+                handleDelete(f.id)
+            };
+            filesContainer.appendChild(newFile);
         }
+
         let path = document.querySelector('.path');
-        path.textContent = pathList.join(' > ');
+        path.textContent = pathList.join(' / ');
     }
 
     let backButton = document.querySelector('.go-back');
     function navigateBack() {
-        if (currentLocation === root) return;
+        if (currentLocation.id == root) return;
         pathList.pop();
         currentLocation = currentLocation.parent;
-        showDirecotory(currentLocation);
+        if (currentLocation) showDirecotory(currentLocation);
     }
-    backButton.onclick = navigateBack;
-
+    if (backButton) backButton.onclick = navigateBack;
 
     showDirecotory(currentLocation);
 })();
 
-
+// Forms Handling
 (function handlePostNewFolder() {
-
     let newFolderForm = document.querySelector('.new-folder-form');
-
     let newFolderFormMobile = document.querySelector('.new-folder-form-mobile');
 
-    newFolderForm.addEventListener('submit', (e) => {
-        let location = newFolderForm.querySelector('#location');
-        location.value = currentLocation.id;
-    })
+    if (newFolderForm) {
+        newFolderForm.addEventListener('submit', (e) => {
+            let loc = newFolderForm.querySelector('input[name="location"]');
+            if (loc) loc.value = currentLocation.id;
+        });
+    }
 
-    newFolderFormMobile.addEventListener('submit', (e) => {
-        let location = newFolderFormMobile.querySelector('#location');
-        location.value = currentLocation.id;
-    })
+    if (newFolderFormMobile) {
+        newFolderFormMobile.addEventListener('submit', (e) => {
+            let loc = newFolderFormMobile.querySelector('input[name="location"]');
+            if (loc) loc.value = currentLocation.id;
+        });
+    }
 
     const closepPreviewMobile = document.querySelector('.close-preview-mobile');
     const previewMobile = document.querySelector('.right-side-bar');
-    closepPreviewMobile.addEventListener("click", () => {
-        previewMobile.style['display'] = 'none';
-    })
 
-
-
-
-
+    if (closepPreviewMobile && previewMobile) {
+        closepPreviewMobile.addEventListener("click", () => {
+            previewMobile.style.display = 'none';
+        });
+    }
 })();
-
 
 (function handlePostNewFile() {
 
     let fileName = document.querySelector('.name');
+    let progressBar = document.querySelector('.progress-bar');
 
-    let fileInput = document.querySelector('#file');
-
-    let fileform = document.getElementById('file-form');
-
-    let progressBar = document.querySelector('.progress-bar')
-
+    let fileInputs = document.querySelectorAll('input[type="file"]');
 
     function validateFile(file) {
         let sizemb = file.size / 1000000;
-        if (sizemb > 5) {
-            alert('file too big!');
-            return false;
-        }
-        let allowed = ['application/pdf', 'text/plain']
-        if (!file.type.startsWith('image') && !file.type.startsWith('video') && !allowed.includes(file.type)) {
-            alert('unknown file type')
+        if (sizemb > 10) {
+            alert('File too big! (Max 50MB)');
             return false;
         }
         return true;
-
     }
 
-    async function postFile(file) {
-        let data = new FormData(fileform);
+    async function postFile(file, formElement) {
+        let data = new FormData();
+        data.append('file', file);
+        data.append('location', currentLocation.id);
+
         let xhr = new XMLHttpRequest()
 
-        // Create an instance of Notyf
-        var notyf = new window.Notyf({ duration: 0, ripple: true, position: { x: 'right', y: 'center' } });
+        if (window.Notyf) {
+            var notyf = new window.Notyf({ duration: 0, ripple: true, position: { x: 'right', y: 'bottom' } });
+            notyf.success('Uploading...');
+        }
 
-        // Display a success notification
-        notyf.success('your file is being uploaded...');
+        if (progressBar) progressBar.classList.remove('hide');
 
-
-        progressBar.classList.remove('hide');
         xhr.upload.addEventListener('progress', (e) => {
-            let current = e.loaded / e.total;
-            progressBar.value = Math.floor(current * 100);
+            if (e.lengthComputable) {
+                let current = e.loaded / e.total;
+                if (progressBar) progressBar.value = Math.floor(current * 100);
+            }
         })
 
         xhr.upload.addEventListener('loadend', (e) => {
-            progressBar.classList.add('hide');
-            fileInput.files = null;
+            if (progressBar) progressBar.classList.add('hide');
         })
 
         xhr.addEventListener("loadend", (e) => {
-            notyf.dismissAll();
-            notyf.success('your file was uploaded successfuly');
-            window.location.reload();
+            if (xhr.status >= 200 && xhr.status < 300) {
+                if (window.Notyf) {
+                    notyf.dismissAll();
+                    notyf.success('Upload successful');
+                }
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                if (window.Notyf) notyf.error('Upload failed');
+            }
         })
-        data.append('location', currentLocation.id);
+
         xhr.open('post', '/home/file');
         xhr.send(data);
-        xhr.addEventListener('error', () => {
-            let notyf = new window.Notyf({ duration: 3000, ripple: true, position: { x: 'right', y: 'center' } });
-            notyf.error('there was an error please try again later');
-        })
     }
 
-    fileInput.addEventListener("change", async (e) => {
+    fileInputs.forEach(input => {
+        input.addEventListener("change", async (e) => {
+            let file = e.target.files[0];
+            if (!file) return;
 
-        let file = e.target.files[0];
+            if (!validateFile(file)) {
+                input.value = ""; // Reset
+                return;
+            }
 
-        if (!validateFile(file)) {
-            fileInput.files = null;
-            return;
-        }
-
-        fileName.textContent = file.name;
-        await postFile(file);
-
-    })
-
+            if (fileName) fileName.textContent = file.name;
+            await postFile(file);
+        });
+    });
 
 })()
 
 let toggleDeleteButton = document.querySelector('.toggle-delete-button');
-toggleDeleteButton.onclick = () => {
-    let deleteButton = document.querySelectorAll('.delete-button');
-    deleteButton.forEach((e) => {
-        e.classList.toggle('hide');
-    });
+if (toggleDeleteButton) {
+    toggleDeleteButton.onclick = () => {
+        let deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach((e) => {
+            e.classList.toggle('hide');
+        });
+    }
 }
 
 let icon = document.querySelector('.user-icon');
 let options = document.querySelector('.options');
-icon.onclick = () => { options.classList.toggle('hide') };
-
+if (icon && options) {
+    icon.onclick = () => { options.classList.toggle('hide') };
+}
 
 let logout = document.querySelector('.logout');
-logout.onclick = () => { fetch('/login', { method: 'delete' }).then((res) => { location.replace('/login'); }) }
-
-
-// logout.onclick = () => { fetch('/login', { method: 'delete' }) }
+if (logout) {
+    logout.onclick = () => {
+        fetch('/login', { method: 'delete' }).then(() => { location.replace('/login'); })
+    }
+}

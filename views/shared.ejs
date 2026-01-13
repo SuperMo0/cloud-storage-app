@@ -5,32 +5,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/shared.css">
-    <link rel="stylesheet" href="/css/all.min.css">
-    <link rel="stylesheet" href="/css/regular.min.css">
-    <title>Safe</title>
+    <title>Safe Cloud - Shared</title>
 </head>
 
 <body>
 
     <div class="page">
         <header class="header-wrapper">
-
             <div class="logo-wrapper">
-                <img class="logo" src="/images/logo.png" alt="">
-                <h1 class="logo-name">Safe Cloud</h1>
+                <div class="logo-icon">
+                    <i class="fa-solid fa-cloud"></i>
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h1 class="logo-name">Safe<span>Cloud</span></h1>
             </div>
 
             <input class="search-bar" placeholder="Search your files..." type="text">
-            <div class="user-icon">
-                <i class="fa-solid fa-user"></i>
-            </div>
 
+            <div class="user-container">
+                <div class="user-icon">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+            </div>
         </header>
+
         <section class="main">
 
             <div class="side-bar">
-
                 <a href="/home" class="side-bar-item">
                     <i class="fa-regular fa-hard-drive"></i>
                     <p>My Drive</p>
@@ -43,30 +46,34 @@
             </div>
 
             <div class="main-content">
-                <h1>Shared Files </h1>
+                <h1>Shared Files</h1>
 
                 <div class="shared-files-container">
 
                     <% files.forEach(file=> { %>
-
                         <div class="shared-file-container">
-                            <i class="fa-regular fa-file"></i>
+                            <i class="fa-solid fa-file-arrow-up fa-file"></i>
                             <p>
                                 <%= file.file.name %>
                             </p>
-                            <button data-url="<%= file.url %>"
-                                onclick="copy(this);showNotification('link is copied to your clipboard')"
-                                class="safe-button"> <i class="fa-regular fa-share-from-square"></i>
-                                copy link</button>
-                            <p>valid till
-                            </p>
-                            <p>
-                                <%= file.expires_at %>
-                            </p>
-                        </div>
 
+                            <button data-url="<%= file.url %>"
+                                onclick="copy(this);showNotification('Link copied to clipboard')" class="safe-button">
+                                <i class="fa-regular fa-copy"></i>
+                                Copy Link
+                            </button>
+
+                            <div style="margin-top: 5px;">
+                                <p style="font-size:0.8rem;">Valid until:</p>
+                                <p style="font-weight:600; color:var(--primary-blue);">
+                                    <%= file.expires_at %>
+                                </p>
+                            </div>
+                        </div>
                         <% }) %>
-                            <script defer> function copy(b) { navigator.clipboard.writeText(b.dataset.url) }
+
+                            <script defer>
+                                function copy(b) { navigator.clipboard.writeText(b.dataset.url) }
                                 function showNotification(message) {
                                     let notification = document.querySelector('.notification');
                                     notification.textContent = message;
@@ -74,9 +81,7 @@
                                     setTimeout(() => {
                                         notification.classList.remove('visable');
                                     }, 3000)
-
                                 }
-
                             </script>
 
                 </div>
@@ -85,13 +90,15 @@
         </section>
 
     </div>
+
     <div class="notification">
-        link is copied to your clipboard
+        Link copied to clipboard
     </div>
+
     <div class="mobile-nav">
         <a href="/home" class="side-bar-item">
             <i class="fa-regular fa-hard-drive"></i>
-            <p>My Drive</p>
+            <p>Drive</p>
         </a>
 
         <a href="/home/shared" class="side-bar-item">
@@ -100,11 +107,10 @@
         </a>
 
         <label class="mobile-upload" for="file">
-            <i class="fa-solid fa-arrow-up-from-bracket"></i>
-            <p class="">Upload</p>
+            <i class="fa-solid fa-arrow-up-from-bracket" style="font-size:20px; color:var(--text-muted);"></i>
+            <p style="font-size:0.8rem; margin:0;">Upload</p>
             <input class="file" type="file" name="file" id="file">
         </label>
-
     </div>
 </body>
 

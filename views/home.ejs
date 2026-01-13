@@ -5,21 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/normalize.css">
-    <link rel="stylesheet" href="/css/all.min.css">
-    <link rel="stylesheet" href="/css/regular.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/home.css">
     <script src="/js/homeScript.js" defer></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 
-    <title>Safe</title>
+    <title>Safe Cloud</title>
 </head>
 
 <body>
 
     <div class="page">
         <header class="header-wrapper">
-
             <div class="logo-wrapper">
                 <div class="logo-icon">
                     <i class="fa-solid fa-cloud"></i>
@@ -29,29 +27,31 @@
             </div>
 
             <input class="search-bar" placeholder="Search your files..." type="text">
+
             <div class="user-container">
                 <div class="user-icon">
                     <i class="fa-solid fa-user"></i>
                 </div>
                 <div class="options hide">
-                    <button class="safe-button logout">logout</button>
+                    <button class="safe-button logout">Log Out</button>
                 </div>
             </div>
-
         </header>
+
         <section class="main">
 
             <div class="side-bar">
 
                 <div class="dropdown-wrapper">
                     <div class="new-folder-dropdown">
-                        <button class="new-folder-dropdown-button"> + New Folder</button>
+                        <button class="new-folder-dropdown-button">New Folder</button>
                         <i class="fa-solid fa-angle-down"></i>
                     </div>
                     <form method="post" action="/home/folder" class="new-folder-form hide">
-                        <input type="text" name="name" id="name" placeholder="NewFolder" required>
-                        <input style="width: 0; height: 0;" type="text" name="location" id="location" value="0">
-                        <button type="submit" class="post-new-folder-button"> create</button>
+                        <input type="text" name="name" id="name" placeholder="Folder Name" required>
+                        <input style="width: 0; height: 0; opacity: 0;" type="text" name="location" id="location"
+                            value="0">
+                        <button type="submit" class="safe-button" style="width:100%; margin-top:5px;">Create</button>
                     </form>
                 </div>
 
@@ -65,31 +65,30 @@
                     <p>Shared</p>
                 </a>
 
-                <button class="safe-button toggle-delete-button"> <i class="fa-regular fa-trash-can"></i> Delete
-                    Files</button>
+                <button class="safe-button toggle-delete-button">
+                    <i class="fa-regular fa-trash-can"></i> Delete Files
+                </button>
 
-
-                <form enctype="multipart/form-data" id="file-form">
+                <form enctype="multipart/form-data" id="file-form" style="margin-top:auto;">
                     <label class="upload-area" for="file">
                         <div class="upload-wrapper">
                             <i class="fa-solid fa-arrow-up-from-bracket"></i>
-                            <p>Choose Files to upload</p>
-                            <p class="name"></p>
+                            <p>Click to Upload Files</p>
+                            <p class="name" style="font-size: 0.8rem; color: var(--primary-blue);"></p>
                             <input class="file" type="file" name="file" id="file">
-                            <progress class="progress-bar hide" max="100" value="0"></progress>
+                            <progress class="progress-bar hide" max="100" value="0"
+                                style="width:80%; margin-top:10px;"></progress>
                         </div>
                     </label>
                 </form>
-
-
-
 
             </div>
 
             <div data-rootId="<%= rootId %>" data-currentLocation="<%= currentLocation %>" data-folders="<%=folders %>"
                 data-files="<%= files %>" class="main-content">
+
                 <div class="path-info-container">
-                    <p class="path">My Drive ></p>
+                    <p class="path">My Drive /</p>
                     <div class="buttons-wrapper">
                         <div class="add-folder-mobile-toggle">
                             <i class="fa-solid fa-plus"></i>
@@ -98,19 +97,17 @@
                             <i class="fa-solid fa-chevron-left"></i>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="folders-section-container">
                     <p class="section-title">Folders</p>
                     <div class="folders-container">
-
                         <div data-id='element.id' class="folder-container hide">
-                            <i class="fa-solid fa-delete-left delete-button hide"></i>
+                            <i class="fa-solid fa-delete-left delete-button hide"
+                                style="color:#ef4444; position:absolute; top:5px; right:5px;"></i>
                             <i class="fa-solid fa-folder"></i>
-                            <p class="folder-name">ssdfsd</p>
+                            <p class="folder-name">FolderName</p>
                         </div>
-
                     </div>
                 </div>
 
@@ -120,79 +117,97 @@
                     <div class="files-container">
 
                         <div class="file-container media hide">
-                            <i class="fa-solid fa-delete-left delete-button hide"></i>
+                            <i class="fa-solid fa-delete-left delete-button hide"
+                                style="color:#ef4444; position:absolute; top:5px; right:5px;"></i>
                             <i class="fa-solid fa-photo-film"></i>
                             <p class="file-name"></p>
                             <p class="file-size"></p>
-                            <p class="file-creation-time"></p>
+                            <p class="file-creation-time" style="display:none;"></p>
                         </div>
 
                         <div class="file-container pdf hide">
-                            <i class="fa-solid fa-delete-left delete-button hide"></i>
+                            <i class="fa-solid fa-delete-left delete-button hide"
+                                style="color:#ef4444; position:absolute; top:5px; right:5px;"></i>
                             <i class="fa-regular fa-file-pdf pdf-file"></i>
                             <p class="file-name"></p>
                             <p class="file-size"></p>
-                            <p class="file-creation-time"></p>
                         </div>
 
                         <div class="file-container general hide">
-                            <i class="fa-solid fa-delete-left delete-button hide"></i>
+                            <i class="fa-solid fa-delete-left delete-button hide"
+                                style="color:#ef4444; position:absolute; top:5px; right:5px;"></i>
                             <i class="fa-regular fa-file-lines general-file"></i>
                             <p class="file-name"></p>
                             <p class="file-size"></p>
-                            <p class="file-creation-time"></p>
                         </div>
 
                     </div>
                 </div>
 
             </div>
-            <div class="right-side-bar">
-                <div class="image-preview-container"></div>
-                <button class="download-media safe-button">Download</button>
-                <button class="share-button safe-button">Share File</button>
-                <button type="button" class="safe-button close-preview-mobile">close</button>
 
-                <form class="share-file-form hide" action="/home/share">
-                    <p>or share</p>
-                    <p>Choose the duration , after this duration the link will expire</p>
-                    <input min="0" value="1" id="duration" name="duration" type="number">
-                    <label for="duration">Hours</label>
-                    <button class="safe-button"> Generate Link</button>
+            <div class="right-side-bar">
+                <div class="image-preview-container">
+                    <p style="color:var(--text-muted);">Select a file to preview</p>
+                </div>
+
+                <button class="download-media safe-button" style="width:100%;">Download</button>
+                <button class="share-button safe-button" style="width:100%; background-color:#10b981;">Share
+                    File</button>
+                <button type="button" class="safe-button hide close-preview-mobile"
+                    style="background-color: var(--text-muted);">Close</button>
+
+                <form class="share-file-form hide" action="/home/share"
+                    style="width:100%; border:1px solid var(--border-light); padding:10px; border-radius:8px;">
+                    <p style="font-size:0.9rem;"><strong>Share this file</strong></p>
+                    <p style="font-size:0.8rem; color:var(--text-muted);">Link expires after:</p>
+
+                    <div
+                        style="display:flex; align-items:center; gap:10px; justify-content:center; margin-bottom:10px;">
+                        <input min="0" value="1" id="duration" name="duration" type="number"
+                            style="width:50px; padding:5px;">
+                        <label for="duration">Hours</label>
+                    </div>
+
+                    <button class="safe-button" style="width:100%;">Generate Link</button>
                 </form>
             </div>
-            <div class="create-folder-mobile">
-                <form method="post" action="/home/folder" class="new-folder-form-mobile">
-                    <input type="text" name="name" id="name" placeholder="NewFolder" required>
-                    <input style="width: 0; height: 0;" type="text" name="location" id="location" value="0">
 
-                    <div class="buttons-wrapper">
-                        <button type="submit" class="post-new-folder-button"> create</button>
-                        <button type="button" class="close-new-folder-page-button">Cancel</button>
+            <div class="create-folder-mobile hide">
+                <form method="post" action="/home/folder" class="new-folder-form-mobile">
+                    <input type="text" name="name" id="name" placeholder="New Folder Name" required>
+                    <input style="width: 0; height: 0; opacity:0;" type="text" name="location" id="location" value="0">
+
+                    <div class="buttons-wrapper" style="margin-top:20px;">
+                        <button type="submit" class="post-new-folder-button safe-button">Create</button>
+                        <button type="button" class="close-new-folder-page-button safe-button"
+                            style="background-color: #ef4444;">Cancel</button>
                     </div>
                 </form>
             </div>
+
+        </section>
     </div>
-    </section>
-    </div>
+
     <div class="notification">
-        link is copied to your clipboard
+        Link copied to clipboard
     </div>
 
     <div class="mobile-nav">
-        <a href="/home" class="side-bar-item">
+        <a href="/home" class="side-bar-item" style="flex-direction:column; padding:5px; background:none;">
             <i class="fa-regular fa-hard-drive"></i>
-            <p>My Drive</p>
+            <p style="font-size:0.8rem;">Drive</p>
         </a>
 
-        <a href="/home/shared" class="side-bar-item">
+        <a href="/home/shared" class="side-bar-item" style="flex-direction:column; padding:5px; background:none;">
             <i class="fa-regular fa-share-from-square"></i>
-            <p>Shared</p>
+            <p style="font-size:0.8rem;">Shared</p>
         </a>
 
-        <label class="mobile-upload" for="file">
-            <i class="fa-solid fa-arrow-up-from-bracket"></i>
-            <p class="">Upload</p>
+        <label class="mobile-upload" for="file"
+            style="display:flex; flex-direction:column; align-items:center; color:var(--text-main);">
+            <i class="fa-solid fa-arrow-up-from-bracket" style="font-size:20px; color:var(--text-muted);"></i>
+            <p style="font-size:0.8rem; margin:0;">Upload</p>
             <input class="file" type="file" name="file" id="file">
         </label>
     </div>

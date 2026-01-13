@@ -5,46 +5,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/login.css">
-    <title>Sign Up</title>
+    <title>Safe Cloud - Sign In</title>
 </head>
 
 <body>
     <section class="page">
         <div class="main-content">
+
             <div class="logo-section">
                 <div class="logo-wrapper">
-                    <img class="logo" src="/images/logo.png" alt="Safe logo">
-                    <h1 class="logo-name">Safe</h1>
+                    <div class="logo-icon">
+                        <i class="fa-solid fa-cloud"></i>
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h1 class="logo-name">Safe<span>Cloud</span></h1>
                 </div>
-                <h1>Welcome Back</h1>
-                <p>
-                    <% if (messages.length) { %>
-                        <p style="color: tomato;">
-                            <%= messages[0] %>
-                        </p>
 
+                <h1>Welcome Back</h1>
+
+                <% if (messages.length) { %>
+                    <div class="error-msg">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <%= messages[0] %>
+                    </div>
+                    <% } else { %>
+                        <p>Enter your details to access your files.</p>
                         <% } %>
-                </p>
             </div>
+
             <form action="/login" method="post">
                 <div class="input-wrapper">
                     <label for="email">Email Address</label>
-                    <input type="email" name="email" id="email" autocomplete="email">
+                    <input type="email" name="email" id="email" autocomplete="email" placeholder="name@example.com"
+                        required>
                 </div>
                 <div class="input-wrapper">
-                    <label for="email">Password</label>
-                    <input type="password" name="password" id="password" autocomplete="current-password">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" autocomplete="current-password"
+                        placeholder="••••••••" required>
                 </div>
-                <button type="submit">Sign in</button>
+                <button type="submit">Sign In</button>
             </form>
+
             <form action="/signup/guest" method="post">
-                <button type="submit">login as guest</button>
+                <button type="submit">Login as Guest</button>
             </form>
-            <p class="signin">don't have account yet ? <a href="/signup">Register</a></p>
+
+            <p class="signin">Don't have an account? <a href="/signup">Register</a></p>
 
         </div>
-
     </section>
 </body>
 
