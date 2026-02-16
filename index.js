@@ -13,7 +13,7 @@ const app = express();
 app.set('view engine', 'ejs');
 
 app.use(express.static('./public'));
-app.use(express.static('./node_modules/@fortawesome/fontawesome-free'));
+app.use(express.static('./node_modules/@fortawesome/fontawesome-free')); // serving this whole file is definetly a bad idea
 app.use(session);
 app.use(passport.authenticate('session'));
 
